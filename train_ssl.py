@@ -85,7 +85,7 @@ def parse_option():
     # method
     parser.add_argument('--backbone', type=str, default='SimConv4')
     parser.add_argument('--model_name', type=str, default='Pi',
-                        choices=['SupCE', 'SemiIntra', 'SemiInter', 'Forecast', 'SemiPF','Pi'], help='choose method')
+                        choices=['SupCE', 'SSTSC', 'MTL','Pi'], help='choose method')
 
     parser.add_argument('--config_dir', type=str, default='./config', help='The Configuration Dir')
     parser.add_argument('--label_ratio', type=float, default=0.4,
@@ -180,28 +180,18 @@ if __name__ == "__main__":
                 acc_test, epoch_max = supervised_train(
                     x_train, y_train, x_val, y_val, x_test, y_test, opt)
                 acc_unlabel=0
-            elif 'SemiIntra' in opt.model_name:
-                acc_test, acc_unlabel, epoch_max = train_SemiIntra(
+            elif 'MTL' in opt.model_name:
+                acc_test, acc_unlabel, epoch_max = train_MTL(
                     x_train, y_train, x_val, y_val, x_test, y_test,opt)
-            elif 'SemiInter' in opt.model_name:
-                acc_test, acc_unlabel, epoch_max = train_SemiInter(
-                    x_train, y_train, x_val, y_val, x_test, y_test,opt)
-            elif 'Forecast' in opt.model_name:
-                acc_test, acc_unlabel, epoch_max = train_Forecasting(
-                    x_train, y_train, x_val, y_val, x_test, y_test,opt)
-            elif 'SemiPF' in opt.model_name:
-                acc_test, acc_unlabel, epoch_max = train_SemiInterPF(
+            elif 'SSTSC' in opt.model_name:
+                acc_test, acc_unlabel, epoch_max = train_sstsc(
                     x_train, y_train, x_val, y_val, x_test, y_test,opt)
             elif 'Pseudo' in opt.model_name:
                 acc_test, acc_unlabel, acc_ws, epoch_max = train_pseudo(
                     x_train, y_train, x_val, y_val, x_test, y_test, opt)
-            elif 'Vat' in opt.model_name:
-                acc_test, acc_unlabel, acc_ws, epoch_max = train_vat(
-                    x_train, y_train, x_val, y_val, x_test, y_test, opt)
             elif 'Pi' in opt.model_name:
                 acc_test, acc_unlabel, acc_ws, epoch_max = train_pi(
                     x_train, y_train, x_val, y_val, x_test, y_test, opt)
-
             print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
                 opt.dataset_name, x_train.shape[0], x_test.shape[0], x_train.shape[1], opt.nb_class,
                 seed, round(acc_test, 2), round(acc_unlabel, 2), epoch_max),
